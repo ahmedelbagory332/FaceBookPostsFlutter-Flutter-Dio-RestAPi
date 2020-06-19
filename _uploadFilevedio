@@ -1,0 +1,31 @@
+void _uploadFilevedio() async {
+
+    File filePath;
+     await ImagePicker.pickVideo(source: ImageSource.gallery).then((vedio) {
+       setState(() {
+         filePath = vedio ;
+         print('bbb ${vedio.path}');
+
+       });
+     });
+
+
+    // Get base file name
+    String fileName = basename(filePath.path);
+    print("File base name: $fileName");
+
+    try {
+      FormData formData =
+      new FormData.from({"image_path":  UploadFileInfo(filePath, fileName),"name":'name',"post":'post',"time":'21'});
+
+      Response response =
+      await Dio().post("http://192.168.1.8/FaceBookPostsFlutter/php/uploadpost.php", data: formData);
+
+      var responseServer = jsonDecode(response.data);
+
+
+      _showSnakBarMsg(responseServer[0]['message']);
+    } catch (e) {
+      print("Exception Caught: $e");
+    }
+  }
